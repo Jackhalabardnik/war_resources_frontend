@@ -1,6 +1,6 @@
 import {useState} from "react"
 import axios from "axios"
-import {Alert, Button, FloatingLabel, Form} from "react-bootstrap"
+import {Alert, Button, ButtonGroup, FloatingLabel, Form} from "react-bootstrap"
 import {useFormik} from 'formik';
 import * as yup from "yup";
 
@@ -8,7 +8,7 @@ const signupValidationSchema = yup.object().shape({
     username: yup.string().required().label('Username'),
     email: yup.string().email().required().label('Email'),
     password: yup.string().required().label('Password'),
-    role: yup.string().label('Password')
+    role: yup.string().label('Role')
 });
 
 const Signup = () => {
@@ -19,7 +19,7 @@ const Signup = () => {
             username: '',
             email: '',
             password: '',
-            role: '[]',
+            role: '[BASIC]',
         },
         validationSchema: signupValidationSchema,
         onSubmit: values => {
@@ -79,6 +79,37 @@ const Signup = () => {
                         <Form.Control.Feedback type="invalid"
                                                className="fw-bold">{formik.errors.password}</Form.Control.Feedback>
                     </FloatingLabel>
+                    <Form.Group className="mb-3">
+                        <ButtonGroup className="mb-3 d-flex" id="inputAccountType">
+                            <Button
+                                name="role"
+                                variant="outline-light"
+                                className="shadow-none"
+                                active={formik.values.role === '[BASIC]'}
+                                value={'[BASIC]'}
+                                onClick={formik.handleChange}>
+                                Basic
+                            </Button>
+                            <Button
+                                name="role"
+                                variant="outline-light"
+                                className="shadow-none"
+                                active={formik.values.role === '[PREMIUM]'}
+                                value={'[PREMIUM]'}
+                                onClick={formik.handleChange}>
+                                Premium
+                            </Button>
+                            <Button
+                                name="role"
+                                variant="outline-light"
+                                className="shadow-none"
+                                active={formik.values.role === '[CUSTOM]'}
+                                value={'[CUSTOM]'}
+                                onClick={formik.handleChange}>
+                                Custom
+                            </Button>
+                        </ButtonGroup>
+                    </Form.Group>
                     <Button type="submit" variant="primary" className="col-12">Sign Up Now</Button>
                 </div>
             </Form>
