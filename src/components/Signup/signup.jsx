@@ -25,7 +25,7 @@ const Signup = () => {
         onSubmit: values => {
             axios.post("http://localhost:8080/api/user", values)
                 .then(response => {
-                    localStorage.setItem("token", response.data);
+                    localStorage.setItem("token", response.data.Authorization);
                     window.location = "/";
                 })
                 .catch(error => {
