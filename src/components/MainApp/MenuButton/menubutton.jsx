@@ -10,7 +10,7 @@ const MenuButton = (props) => {
             onPointerLeave={() => setShowOptions(false)}
             onClick={props.main_button_on_click}
         >
-            <div className={"d-flex justify-content-between p-2 text-center align-items-center " + (show_options ? props.hover_bg : "")} >
+            <div className={"d-flex justify-content-between p-2 text-center align-items-center text-white " + (show_options ? props.hover_bg : "")} >
                     {props.main_button_text}
             </div>
         </div>

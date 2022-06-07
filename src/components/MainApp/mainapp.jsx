@@ -1,39 +1,18 @@
 import PickList from "./PickList/picklist";
+import WarPicker from "./WarPicker/warpicker";
+import BasicChart from "./BasicChart/basicchart";
 import {useEffect, useState} from "react";
 import axios from "axios";
 import 'react-date-range/dist/styles.css';
 import 'react-date-range/dist/theme/default.css';
-import {DateRangePicker} from 'react-date-range';
-import {Alert} from "react-bootstrap";
 
 const MainApp = () => {
 
     const [resourcesList, setResourcesList] = useState([]);
     const [warList, setWarList] = useState([]);
-    const [selectionRange, setSelectionRange] = useState({
-        startDate: new Date(),
-        endDate: new Date(),
-        key: 'selection',
-    })
-    const [selectionRangeError, setSelectionRangeError] = useState("");
-    const [pickedResourcesList, setpickedResourcesList] = useState([]);
-    const [pickedWarList, setpickedWarList] = useState([]);
-    const [pickedResourcesPricesList, setPickedResourcesPricesList] = useState([]);
+    const [pickedResourcesList, setPickedResourcesList] = useState([]);
+    const [pickedWarList, setPickedWarList] = useState([]);
     const [resourcePrices, setResourcePrices] = useState([]);
-
-    const handleSelect = (ranges) => {
-        if (ranges.selection.startDate > new Date()) {
-            ranges.selection.startDate = new Date();
-            ranges.selection.endDate = new Date();
-            setSelectionRangeError("You can't select future start and end date!");
-        } else if (ranges.selection.endDate > new Date()) {
-            ranges.selection.endDate = new Date();
-            setSelectionRangeError("You can't select future end date!");
-        } else {
-            setSelectionRangeError("");
-        }
-        setSelectionRange(ranges.selection);
-    }
 
     useEffect(() => {
         const token = localStorage.getItem("token")
@@ -59,13 +38,17 @@ const MainApp = () => {
     }
 
     useEffect(() => {
-        if(pickedResourcesList.length > 0 && selectionRange) {
+        if(pickedResourcesList.length > 0 && pickedWarList.length > 0) {
             const token = localStorage.getItem("token")
             if (token) {
+
+                const start_date = parse_date(pickedWarList.sort((a, b) => new Date(a.startDate) - new Date(b.endDate))[0].startDate)
+                const end_date = parse_date(pickedWarList.sort((a, b) => new Date(b.endDate) - new Date(a.endDate))[0].endDate)
+
                 for (let i = 0; i < pickedResourcesList.length; i++) {
-                    axios.get(`http://localhost:8080/api/resources/id/${pickedResourcesList[i].id}?start_date=${parse_date(selectionRange.startDate)}&end_date=${parse_date(selectionRange.endDate)}`, {headers: {"authorization": `${token}`}})
+                   axios.get(`http://localhost:8080/api/resources/id/${pickedResourcesList[i].id}?start_date=${start_date}&end_date=${end_date}`, {headers: {"authorization": `${token}`}})
                         .then((response) => {
-                            setResourcePrices([...resourcePrices,response.data])
+                            setResourcePrices([response.data])
                         }).catch((error) => {
                         console.log(error)
                     })
@@ -73,48 +56,31 @@ const MainApp = () => {
 
             }
         }
-    }, [pickedResourcesList, selectionRange]);
+    }, [pickedResourcesList, pickedWarList]);
 
     return (
-        <div className="vh-100 overflow-hidden">
-            <div className="vh-100 overflow-hidden d-flex flex-md-row flex-column">
-                <div className="col-1 h-50 overflow-scroll my-3">
+        <div className="vh-100 overflow-hidden bg-dark bg-opacity-75">
+            <div className="vh-100 overflow-hidden d-flex flex-md-row flex-column bg-dark bg-opacity-10">
+                <div className="col-1 h-75">
                     <PickList
                         list={resourcesList}
                         no_data_message="No resource data"
                         pickedList={pickedResourcesList}
-                        setPickedList={setpickedResourcesList}
+                        setPickedList={setPickedResourcesList}
                     />
                 </div>
-                <div className="col-3 h-50 overflow-scroll mb-3">
-                    <PickList
+                <div className="col-5 h-75 mb-3 overflow-scroll">
+                    <WarPicker
                         list={warList}
-                        no_data_message="No war data"
-                        max_picked_items={2}
                         pickedList={pickedWarList}
-                        setPickedList={setpickedWarList}
-                    />
-                </div>
-                <div className="m-1 p-1">
-                    <DateRangePicker
-                        ranges={[selectionRange]}
-                        onChange={handleSelect}
-                    />
-                    {
-                        selectionRangeError &&
-                        <Alert variant="danger">
-                            {selectionRangeError}
-                        </Alert>
-                    }
-                </div>
-                <div className="col-3 h-50 overflow-scroll mb-3">
-                    <PickList
-                        list={resourcePrices}
-                        no_data_message="No prices data"
+                        setPickedList={setPickedWarList}
                         max_picked_items={2}
-                        pickedList={pickedResourcesPricesList}
-                        setPickedList={setPickedResourcesPricesList}
                     />
+                </div>
+                <div className="col-3 h-75 overflow-scroll mb-3">
+                    <BasicChart
+                        list={resourcePrices}
+                        />
                 </div>
             </div>
         </div>

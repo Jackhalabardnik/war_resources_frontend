@@ -6,13 +6,7 @@ const PickList = (props) => {
         if (props.pickedList.includes(item)) {
             props.setPickedList(props.pickedList.filter(i => i !== item));
         } else {
-            if (props.max_picked_items && props.pickedList.length >= props.max_picked_items) {
-                    const new_picked_list = props.pickedList.slice(props.pickedList.length - 1);
-                    new_picked_list.push(item);
-                props.setPickedList(new_picked_list);
-            } else {
-                props.setPickedList([...props.pickedList, item]);
-            }
+            props.setPickedList([...props.pickedList, item]);
         }
     }
 
