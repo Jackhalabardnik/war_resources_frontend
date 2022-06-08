@@ -7,11 +7,11 @@ const BasicChart = (props) => {
                 <ul>
                     {props.list.map((resource, resource_index) => (
                         <li key={resource_index}>
-                            {resource.name}
+                            {resource.label}
                             <ul className="ms-2">
-                                {resource.prices.sort((a, b) => new Date(a.date) - new Date(b.date)).map((price, price_index) => (
+                                {resource.data.map((price, price_index) => (
                                     <li key={price_index}>
-                                        {price.date} -> {price.price}
+                                        {price.day} -> {price.price}
                                     </li>
                                 ))}
                             </ul>

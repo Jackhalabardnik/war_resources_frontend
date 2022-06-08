@@ -37,6 +37,23 @@ const MainApp = () => {
         return `${date_obj.getFullYear()}-${(date_obj.getMonth() + 1).toString(10).padStart(2, '0')}-${date_obj.getDate().toString(10).padStart(2, '0')}`
     }
 
+    const parse_resource_prices = (resource_prices) => {
+        return pickedWarList.map((war, war_index) => {
+            return {
+                label: war.name,
+                data: resource_prices.prices
+                    .filter(price => parse_date(price.date) >= parse_date(war.startDate) && parse_date(price.date) <= parse_date(war.endDate))
+                    .sort((a, b) => new Date(a.date) - new Date(b.date))
+                    .map((price, price_index) => {
+                        return {
+                            day: price_index + 1,
+                            price: price.price
+                        }
+                    })
+            }
+        })
+    }
+
     useEffect(() => {
         if(pickedResourcesList.length > 0 && pickedWarList.length > 0) {
             const token = localStorage.getItem("token")
@@ -48,7 +65,7 @@ const MainApp = () => {
                 for (let i = 0; i < pickedResourcesList.length; i++) {
                    axios.get(`http://localhost:8080/api/resources/id/${pickedResourcesList[i].id}?start_date=${start_date}&end_date=${end_date}`, {headers: {"authorization": `${token}`}})
                         .then((response) => {
-                            setResourcePrices([response.data])
+                            setResourcePrices(parse_resource_prices(response.data))
                         }).catch((error) => {
                         console.log(error)
                     })
