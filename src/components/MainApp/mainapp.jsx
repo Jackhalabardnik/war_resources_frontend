@@ -1,5 +1,5 @@
-import PickList from "./PickList/picklist";
 import WarPicker from "./WarPicker/warpicker";
+import ResourcePicker from "./ResourcePicker/resourcepicker";
 import BasicChart from "./BasicChart/basicchart";
 import {useEffect, useState} from "react";
 import axios from "axios";
@@ -134,25 +134,24 @@ const MainApp = () => {
                 data: {}
             })
         }
+        // eslint-disable-next-line
     }, [pickedResourcesList, pickedWarList]);
 
     return (
         <div className="vh-100 overflow-hidden bg-dark bg-opacity-75">
             <div className="vh-100 overflow-hidden d-flex flex-md-row flex-column bg-dark bg-opacity-10">
-                <div className="col-1 h-75">
-                    <PickList
+                <div className="col-2 h-75">
+                    <ResourcePicker
                         list={resourcesList}
-                        no_data_message="No resource data"
                         pickedList={pickedResourcesList}
                         setPickedList={setPickedResourcesList}
                     />
                 </div>
-                <div className="col-5 h-75 mb-3 overflow-scroll">
+                <div className="col-3 h-75 mb-3 overflow-scroll">
                     <WarPicker
                         list={warList}
                         pickedList={pickedWarList}
                         setPickedList={setPickedWarList}
-                        max_picked_items={2}
                     />
                 </div>
                 <div className="m-3 h-75 w-100 me-5">

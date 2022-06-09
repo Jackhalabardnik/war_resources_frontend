@@ -4,7 +4,7 @@ import {useState, useEffect} from "react";
 const WarPicker = (props) => {
 
     const create_option_list = (list) => {
-        return list.map((item, index) => {
+        return list.map((item) => {
             return {
                 value: item,
                 label: item.name
