@@ -12,7 +12,10 @@ const MainApp = () => {
     const [warList, setWarList] = useState([]);
     const [pickedResourcesList, setPickedResourcesList] = useState([]);
     const [pickedWarList, setPickedWarList] = useState([]);
-    const [resourcePrices, setResourcePrices] = useState([]);
+    const [resourcesChartData, setResourcesChartData] = useState({
+        labels: [],
+        data: {}
+    });
 
     useEffect(() => {
         const token = localStorage.getItem("token")
@@ -35,6 +38,46 @@ const MainApp = () => {
     const parse_date = (date) => {
         const date_obj = new Date(date)
         return `${date_obj.getFullYear()}-${(date_obj.getMonth() + 1).toString(10).padStart(2, '0')}-${date_obj.getDate().toString(10).padStart(2, '0')}`
+    }
+
+    const get_resource_prices = (war, resource) => {
+        const war_start_date = new Date(war.startDate)
+        const war_end_date = new Date(war.endDate)
+        let price_array = []
+        for(let date = war_start_date; date <= war_end_date; date.setDate(date.getDate() + 1)) {
+            const resource_price = resource.prices.find(price => {
+                return parse_date(price.date) === parse_date(date)
+            })
+            if (resource_price) {
+                price_array.push(resource_price.price)
+            } else {
+                price_array.push(null)
+            }
+        }
+
+        return price_array;
+    }
+
+    const parse_resource_requests = (resource_requests) => {
+        const request_data = resource_requests.map(request => request.data)
+        const array_of_prices = []
+        pickedWarList.forEach(war => {
+            request_data.forEach(resource => {
+                let price_array = get_resource_prices(war, resource);
+                array_of_prices.push({
+                    price: price_array,
+                    type: resource.name,
+                    war: war.name,
+                })
+            })
+        })
+        const longest_war_in_days = Math.max(...array_of_prices.map(price => price.price.length))
+        const labels = Array.from(Array(longest_war_in_days).keys()).map(day => `Day ${day + 1}`)
+
+        return {
+            labels: labels,
+            data: array_of_prices
+        }
     }
 
     const parse_resource_prices = (resource_prices) => {
@@ -62,14 +105,17 @@ const MainApp = () => {
                 const start_date = parse_date(pickedWarList.sort((a, b) => new Date(a.startDate) - new Date(b.endDate))[0].startDate)
                 const end_date = parse_date(pickedWarList.sort((a, b) => new Date(b.endDate) - new Date(a.endDate))[0].endDate)
 
+                let resource_requests = [];
+
                 for (let i = 0; i < pickedResourcesList.length; i++) {
-                   axios.get(`http://localhost:8080/api/resources/id/${pickedResourcesList[i].id}?start_date=${start_date}&end_date=${end_date}`, {headers: {"authorization": `${token}`}})
-                        .then((response) => {
-                            setResourcePrices(parse_resource_prices(response.data))
-                        }).catch((error) => {
-                        console.log(error)
-                    })
+                    resource_requests.push(axios.get(`http://localhost:8080/api/resources/id/${pickedResourcesList[i].id}?start_date=${start_date}&end_date=${end_date}`, {headers: {"authorization": `${token}`}}))
                 }
+
+                axios.all(resource_requests).then(axios.spread((...responses) => {
+                    setResourcesChartData(parse_resource_requests(responses))
+                })).catch((error) => {
+                    console.log(error)
+                })
 
             }
         }
@@ -94,9 +140,9 @@ const MainApp = () => {
                         max_picked_items={2}
                     />
                 </div>
-                <div className="col-3 h-75 overflow-scroll mb-3">
+                <div className="m-3 h-75 w-100 me-5">
                     <BasicChart
-                        list={resourcePrices}
+                        list={resourcesChartData}
                         />
                 </div>
             </div>
