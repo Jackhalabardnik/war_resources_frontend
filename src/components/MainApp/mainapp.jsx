@@ -12,6 +12,8 @@ const MainApp = () => {
     const [warList, setWarList] = useState([]);
     const [pickedResourcesList, setPickedResourcesList] = useState([]);
     const [pickedWarList, setPickedWarList] = useState([]);
+    const [chartError, setChartError] = useState('');
+    const [chartWarning, setChartWarning] = useState([]);
     const [resourcesChartData, setResourcesChartData] = useState({
         labels: [],
         data: {}
@@ -47,9 +49,18 @@ const MainApp = () => {
         let first_price_index = resource.prices.findIndex(price => {
             return parse_date(price.date) === parse_date(war_start_date)
         })
+
+        if (first_price_index === -1) {
+            return null;
+        }
+
         let price_array = []
 
-        for(let i = first_price_index; i < first_price_index+ war_length; i++) {
+        if (first_price_index === -1) {
+            console.log(resource.prices)
+        }
+
+        for (let i = first_price_index; i < first_price_index + war_length; i++) {
             price_array.push(resource.prices[i].price)
         }
 
@@ -59,18 +70,36 @@ const MainApp = () => {
     const parse_resource_requests = (resource_requests) => {
         const request_data = resource_requests.map(request => request.data)
         const array_of_prices = []
-        pickedWarList.forEach(war => {
-            request_data.forEach(resource => {
-                let price_array = get_resource_prices(war, resource);
-                array_of_prices.push({
-                    price: price_array,
-                    type: resource.name,
-                    war: war.name,
+        let labels = []
+        const is_data_available = request_data.find(resource => resource.prices.length > 0)
+        let warning_data = []
+
+        if (is_data_available) {
+            pickedWarList.forEach(war => {
+                request_data.forEach(resource => {
+                    if (resource.prices.length > 0) {
+                        let price_array = get_resource_prices(war, resource);
+                        if (price_array) {
+                            array_of_prices.push({
+                                price: price_array,
+                                type: resource.name,
+                                war: war.name,
+                            })
+                        } else {
+                            warning_data.push(`${resource.name} has no prices for ${war.name}`)
+                        }
+                    } else {
+                        warning_data.push(`${resource.name} has no prices for ${war.name}`)
+                    }
                 })
             })
-        })
-        const longest_war_in_days = Math.max(...array_of_prices.map(price => price.price.length))
-        const labels = Array.from(Array(longest_war_in_days).keys()).map(day => `Day ${day + 1}`)
+            const longest_war_in_days = Math.max(...array_of_prices.map(price => price.price.length))
+            labels = Array.from(Array(longest_war_in_days).keys()).map(day => `Day ${day + 1}`)
+            setChartError('')
+            setChartWarning(warning_data)
+        } else {
+            setChartError('There is no data for the selected resources and wars')
+        }
 
         return {
             labels: labels,
@@ -79,7 +108,7 @@ const MainApp = () => {
     }
 
     useEffect(() => {
-        if(pickedResourcesList.length > 0 && pickedWarList.length > 0) {
+        if (pickedResourcesList.length > 0 && pickedWarList.length > 0) {
             const token = localStorage.getItem("token")
             if (token) {
 
@@ -99,6 +128,11 @@ const MainApp = () => {
                 })
 
             }
+        } else {
+            setResourcesChartData({
+                labels: [],
+                data: {}
+            })
         }
     }, [pickedResourcesList, pickedWarList]);
 
@@ -124,7 +158,9 @@ const MainApp = () => {
                 <div className="m-3 h-75 w-100 me-5">
                     <BasicChart
                         list={resourcesChartData}
-                        />
+                        chartError={chartError}
+                        chartWarning={chartWarning}
+                    />
                 </div>
             </div>
         </div>

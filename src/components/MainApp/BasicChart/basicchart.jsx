@@ -1,4 +1,13 @@
-import {LineElement, PointElement, CategoryScale, Chart as ChartJS, Legend, LinearScale, Title, Tooltip} from "chart.js";
+import {
+    LineElement,
+    PointElement,
+    CategoryScale,
+    Chart as ChartJS,
+    Legend,
+    LinearScale,
+    Title,
+    Tooltip
+} from "chart.js";
 import {Line} from 'react-chartjs-2';
 
 ChartJS.register(
@@ -11,10 +20,9 @@ ChartJS.register(
     PointElement
 );
 
-const hsv2rgb = (h,s,v) =>
-{
-    let f= (n,k=(n+h/60)%6) => v - v*s*Math.max( Math.min(k,4-k,1), 0);
-    return [f(5),f(3),f(1)];
+const hsv2rgb = (h, s, v) => {
+    let f = (n, k = (n + h / 60) % 6) => v - v * s * Math.max(Math.min(k, 4 - k, 1), 0);
+    return [f(5), f(3), f(1)];
 }
 
 const golden_ratio = 0.618033988749895;
@@ -27,8 +35,8 @@ const BasicChart = (props) => {
         hue = hue > 1 ? hue - 1 : hue;
         const saturation = 0.8;
         const value = 0.95;
-        const rgb = hsv2rgb(hue*360, saturation, value);
-        const rgb_string = `rgb(${rgb[0]*255}, ${rgb[1]*255}, ${rgb[2]*255})`
+        const rgb = hsv2rgb(hue * 360, saturation, value);
+        const rgb_string = `rgb(${rgb[0] * 255}, ${rgb[1] * 255}, ${rgb[2] * 255})`
 
         console.log(hue, rgb, rgb_string)
 
@@ -50,27 +58,43 @@ const BasicChart = (props) => {
         maintainAspectRatio: true,
     }
 
-    let chartData = props.list.labels.length > 0 ? {
-        labels: props.list.labels,
-        datasets: props.list.data.map((data) => {
-            const label_color = get_color()
-            return {
-                label: `${data.war} -> ${data.type}`,
-                data: data.price,
-                pointRadius: 0,
-                borderColor: label_color,
-                backgroundColor: label_color,
-                tension: 0.1,
-                spanGaps: true,
-            }
-        })
-    } : null;
+    let chartData = props.list.labels.length > 0 ?
+
+        {
+            labels: props.list.labels,
+            datasets: props.list.data.map((data) => {
+                const label_color = get_color()
+                return {
+                    label: `${data.war} -> ${data.type}`,
+                    data: data.price,
+                    pointRadius: 0,
+                    borderColor: label_color,
+                    backgroundColor: label_color,
+                    tension: 0.1,
+                    spanGaps: true,
+                }
+            })
+        } : null;
 
     return (
-        <div className="bg-white">
+        <div>
             {
-                chartData &&
-                <Line options={chartOptions} data={chartData} type={"bar"}/>
+                chartData && !props.chartError &&
+                <Line options={chartOptions} data={chartData} type={"bar"} className="bg-white rounded-2"/>
+            }
+            {
+                props.chartError &&
+                <div className="text-center">
+                    <h1>{props.chartError}</h1>
+                </div>
+            }
+            {
+                props.chartWarning && !props.chartError &&
+                <ul className="alert-danger mt-2 rounded-2">
+                    {props.chartWarning.map((warning) => {
+                        return <li key={warning}>{warning}</li>
+                    })}
+                </ul>
             }
         </div>
     )
