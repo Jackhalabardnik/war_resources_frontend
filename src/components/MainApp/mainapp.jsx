@@ -42,17 +42,15 @@ const MainApp = () => {
 
     const get_resource_prices = (war, resource) => {
         const war_start_date = new Date(war.startDate)
-        const war_end_date = new Date(war.endDate)
+        const war_length = (new Date(war.endDate) - new Date(war.startDate)) / (1000 * 60 * 60 * 24)
+
+        let first_price_index = resource.prices.findIndex(price => {
+            return parse_date(price.date) === parse_date(war_start_date)
+        })
         let price_array = []
-        for(let date = war_start_date; date <= war_end_date; date.setDate(date.getDate() + 1)) {
-            const resource_price = resource.prices.find(price => {
-                return parse_date(price.date) === parse_date(date)
-            })
-            if (resource_price) {
-                price_array.push(resource_price.price)
-            } else {
-                price_array.push(null)
-            }
+
+        for(let i = first_price_index; i < first_price_index+ war_length; i++) {
+            price_array.push(resource.prices[i].price)
         }
 
         return price_array;
@@ -78,23 +76,6 @@ const MainApp = () => {
             labels: labels,
             data: array_of_prices
         }
-    }
-
-    const parse_resource_prices = (resource_prices) => {
-        return pickedWarList.map((war, war_index) => {
-            return {
-                label: war.name,
-                data: resource_prices.prices
-                    .filter(price => parse_date(price.date) >= parse_date(war.startDate) && parse_date(price.date) <= parse_date(war.endDate))
-                    .sort((a, b) => new Date(a.date) - new Date(b.date))
-                    .map((price, price_index) => {
-                        return {
-                            day: price_index + 1,
-                            price: price.price
-                        }
-                    })
-            }
-        })
     }
 
     useEffect(() => {
