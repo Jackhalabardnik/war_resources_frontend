@@ -11,16 +11,29 @@ ChartJS.register(
     PointElement
 );
 
+const hsv2rgb = (h,s,v) =>
+{
+    let f= (n,k=(n+h/60)%6) => v - v*s*Math.max( Math.min(k,4-k,1), 0);
+    return [f(5),f(3),f(1)];
+}
+
+const golden_ratio = 0.618033988749895;
+
 const BasicChart = (props) => {
 
-    const get_color = (index, type) => {
-        if (type === 'oil') {
-            return `rgb(${75 + index * 20}, 192, 192)`
-        } else if (type === 'gold') {
-            return `rgb(75, ${120 + index * 20}, 192)`
-        } else if (type === 'silver') {
-            return `rgb(75, 192, ${120 + index * 20})`
-        }
+    const get_color = () => {
+
+        let hue = (Math.random() + golden_ratio);
+        hue = hue > 1 ? hue - 1 : hue;
+        const saturation = 0.8;
+        const value = 0.95;
+        const rgb = hsv2rgb(hue*360, saturation, value);
+        const rgb_string = `rgb(${rgb[0]*255}, ${rgb[1]*255}, ${rgb[2]*255})`
+
+        console.log(hue, rgb, rgb_string)
+
+        return rgb_string
+
     }
 
     const chartOptions = {
@@ -39,14 +52,14 @@ const BasicChart = (props) => {
 
     let chartData = props.list.labels.length > 0 ? {
         labels: props.list.labels,
-        datasets: props.list.data.map((data, index) => {
+        datasets: props.list.data.map((data) => {
+            const label_color = get_color()
             return {
                 label: `${data.war} -> ${data.type}`,
                 data: data.price,
-                pointRadius: 1,
-                pointBorderColor: `rgb(0,0,0)`,
-                borderColor: get_color(index, data.type),
-                backgroundColor: get_color(index, data.type),
+                pointRadius: 0,
+                borderColor: label_color,
+                backgroundColor: label_color,
                 tension: 0.1,
                 spanGaps: true,
             }
