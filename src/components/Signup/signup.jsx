@@ -40,7 +40,7 @@ const Signup = () => {
         <div>
             <Form onSubmit={formik.handleSubmit} noValidate className="px-3">
                 <div>
-                    <FloatingLabel controlId="inputUserName" label="Username" className="mb-3 text-white">
+                    <FloatingLabel controlId="inputUserName" label="Username" className="mb-3">
                         <Form.Control
                             type="text"
                             name="username"
@@ -48,12 +48,12 @@ const Signup = () => {
                             onChange={formik.handleChange}
                             value={formik.values.username}
                             isInvalid={formik.touched.username && !!formik.errors.username}
-                            className="shadow-none bg-light bg-opacity-10 border-0 text-white"
+                            className="shadow-none"
                         />
                         <Form.Control.Feedback type="invalid"
                                                className="fw-bold">{formik.errors.username}</Form.Control.Feedback>
                     </FloatingLabel>
-                    <FloatingLabel controlId="inputUserName" label="Email" className="mb-3 text-white">
+                    <FloatingLabel controlId="inputUserName" label="Email" className="mb-3">
                         <Form.Control
                             type="email"
                             name="email"
@@ -61,12 +61,12 @@ const Signup = () => {
                             onChange={formik.handleChange}
                             value={formik.values.email}
                             isInvalid={formik.touched.email && !!formik.errors.email}
-                            className="shadow-none bg-light bg-opacity-10 border-0 text-white"
+                            className="shadow-none"
                         />
                         <Form.Control.Feedback type="invalid"
                                                className="fw-bold">{formik.errors.email}</Form.Control.Feedback>
                     </FloatingLabel>
-                    <FloatingLabel controlId="inputPassword" label="Password" className="mb-3 text-white">
+                    <FloatingLabel controlId="inputPassword" label="Password" className="mb-3">
                         <Form.Control
                             type="password"
                             name="password"
@@ -74,7 +74,7 @@ const Signup = () => {
                             onChange={formik.handleChange}
                             value={formik.values.password}
                             isInvalid={formik.touched.password && !!formik.errors.password}
-                            className="shadow-none bg-light bg-opacity-10 border-0 text-white"
+                            className="shadow-none"
                         />
                         <Form.Control.Feedback type="invalid"
                                                className="fw-bold">{formik.errors.password}</Form.Control.Feedback>
@@ -83,7 +83,7 @@ const Signup = () => {
                         <ButtonGroup className="mb-3 d-flex" id="inputAccountType">
                             <Button
                                 name="role"
-                                variant="outline-light"
+                                variant="outline-dark"
                                 className="shadow-none"
                                 active={formik.values.role === '[BASIC]'}
                                 value={'[BASIC]'}
@@ -92,7 +92,7 @@ const Signup = () => {
                             </Button>
                             <Button
                                 name="role"
-                                variant="outline-light"
+                                variant="outline-dark"
                                 className="shadow-none"
                                 active={formik.values.role === '[PREMIUM]'}
                                 value={'[PREMIUM]'}
@@ -101,7 +101,7 @@ const Signup = () => {
                             </Button>
                             <Button
                                 name="role"
-                                variant="outline-light"
+                                variant="outline-dark"
                                 className="shadow-none"
                                 active={formik.values.role === '[CUSTOM]'}
                                 value={'[CUSTOM]'}

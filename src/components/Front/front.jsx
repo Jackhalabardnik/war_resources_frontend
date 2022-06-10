@@ -7,9 +7,9 @@ const Front = () => {
             <Rnavbar
                 mainlink="/front"
             />
-            <div className="d-flex flex-lg-row flex-md-column vh-100 bg-dark">
+            <div className="d-flex flex-lg-row flex-md-column w-100">
                 <div
-                    className="d-flex flex-column align-items-center fs-5 align-middle p-4 col-lg-4 col-12 text-white">
+                    className="d-flex flex-column align-items-center fs-5 align-middle p-4 col-lg-4 col-12">
                     <h4>
                         Welcome to War Resources website!
                     </h4>
@@ -34,8 +34,8 @@ const Front = () => {
                     </div>
 
                 </div>
-                <div className="col-lg-8 col-12 me-4 mt-2">
-                    <img src="/splash.png" alt="splash" className="img-fluid"/>
+                <div className="col-lg-8 col-12 mt-2 pe-1">
+                    <img src="/splash.png" alt="splash" className="img-fluid rounded-2"/>
                 </div>
 
             </div>
