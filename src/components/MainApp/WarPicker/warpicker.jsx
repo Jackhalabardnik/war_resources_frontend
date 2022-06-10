@@ -36,13 +36,16 @@ const WarPicker = (props) => {
     }
 
     return (
-        <div>
-
-            <Select options={date_range_selects}
-                    onChange={(selected_option) => handleDateRangeChange(selected_option)}
-                    defaultValue={date_range_selects[0]}
-            />
-
+        <div className="w-100 mx-3">
+            {
+                date_range_selects.length > 0 &&
+                <Select options={date_range_selects}
+                        onChange={(selected_option) => handleDateRangeChange(selected_option)}
+                        defaultValue={date_range_selects[0]}
+                        className="w-100 text-center mb-1"
+                />
+            }
+            <div className="d-flex w-100">
             {
                 props.list.length > 0 &&
                 <Select
@@ -51,6 +54,7 @@ const WarPicker = (props) => {
                     onChange={(selected_option) => {
                         props.setPickFirst(selected_option.value)
                     }}
+                    className="w-100 me-1"
                 />
             }
             {
@@ -61,6 +65,7 @@ const WarPicker = (props) => {
                     onChange={(selected_option) => {
                         props.setPickSecond(selected_option.value)
                     }}
+                    className="w-100"
                 />
             }
             {
@@ -69,6 +74,7 @@ const WarPicker = (props) => {
                     {props.no_data_message}
                 </div>
             }
+            </div>
         </div>
     );
 }

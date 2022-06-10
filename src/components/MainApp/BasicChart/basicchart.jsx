@@ -67,10 +67,10 @@ const BasicChart = (props) => {
         };
 
     return (
-        <div className="w-100">
+        <div className="w-100 mx-2">
             {
                 chartData &&
-                <Line options={chartOptions} data={chartData} type={"bar"} className="bg-white rounded-2"/>
+                <Line options={chartOptions} data={chartData} type={"bar"} className="mx-1"/>
             }
             {
                 props.chartError &&

@@ -10,17 +10,23 @@ const ResourcePicker = (props) => {
     });
 
     return (
-        <div>
+        <div className="w-100 mx-3 d-flex justify-content-center">
             {
                 props.list.length > 0 &&
-                <Select
-                    options={resources_selects_list}
-                    onChange={(selected_option) => props.setPickedList(selected_option.value)}
-                />
+                <div className="text-center d-flex align-items-center">
+                    <div className="me-1">
+                        Resource:
+                    </div>
+                    <Select
+                        options={resources_selects_list}
+                        onChange={(selected_option) => props.setPickedList(selected_option.value)}
+                        className="w-auto"
+                    />
+                </div>
             }
             {
                 props.list.length === 0 &&
-                <div className="mt-1 mx-1 text-white">
+                <div className="mt-1 mx-1 text-white text-center">
                     Loading...
                 </div>
             }

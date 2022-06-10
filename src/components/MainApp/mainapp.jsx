@@ -140,30 +140,28 @@ const MainApp = () => {
     }, [pickedResource, pickedSecondWar]);
 
     return (
-        <div className="vh-100 overflow-scroll ">
-            <div className=" d-flex flex-md-row flex-column h-100">
-                <div className="col-xl-3 col-md-4 col-12 m-1">
-                    <ResourcePicker
-                        list={resourcesList}
-                        pickedList={pickedResource}
-                        setPickedList={setPickedResource}
-                    />
-                    <WarPicker
-                        list={warList}
-                        setPickFirst={setPickedFirstWar}
-                        setPickSecond={setPickedSecondWar}
-                    />
-                </div>
-                <div className="col-xl-9 col-md-8 col-12 m-1 d-flex">
-                    <BasicChart
-                        list={firstChartData}
-                        chartError={firstChartError}
-                    />
-                    <BasicChart
-                        list={secondChartData}
-                        chartError={secondChartError}
-                    />
-                </div>
+        <div className="d-flex flex-column">
+            <div className="d-flex justify-content-evenly flex-md-row flex-column my-1">
+                <ResourcePicker
+                    list={resourcesList}
+                    pickedList={pickedResource}
+                    setPickedList={setPickedResource}
+                />
+                <WarPicker
+                    list={warList}
+                    setPickFirst={setPickedFirstWar}
+                    setPickSecond={setPickedSecondWar}
+                />
+            </div>
+            <div className="d-flex overflow-scroll">
+                <BasicChart
+                    list={firstChartData}
+                    chartError={firstChartError}
+                />
+                <BasicChart
+                    list={secondChartData}
+                    chartError={secondChartError}
+                />
             </div>
         </div>
     );
