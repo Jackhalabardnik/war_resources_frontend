@@ -48,8 +48,19 @@ const WarPicker = (props) => {
                 <Select
                     options={war_selects_list}
                     defaultValue={war_selects_list[0]}
-                    onChange={(selected_option) => props.setPickedList(selected_option.map(item => item.value))}
-                    isMulti
+                    onChange={(selected_option) => {
+                        props.setPickFirst(selected_option.value)
+                    }}
+                />
+            }
+            {
+                props.list.length > 0 &&
+                <Select
+                    options={war_selects_list}
+                    defaultValue={war_selects_list[1]}
+                    onChange={(selected_option) => {
+                        props.setPickSecond(selected_option.value)
+                    }}
                 />
             }
             {

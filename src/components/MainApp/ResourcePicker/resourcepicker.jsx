@@ -15,10 +15,14 @@ const ResourcePicker = (props) => {
                 props.list.length > 0 &&
                 <Select
                     options={resources_selects_list}
-                    defaultValue={resources_selects_list[0]}
-                    onChange={(selected_option) => props.setPickedList(selected_option.map(item => item.value))}
-                    isMulti
+                    onChange={(selected_option) => props.setPickedList(selected_option.value)}
                 />
+            }
+            {
+                props.list.length === 0 &&
+                <div className="mt-1 mx-1 text-white">
+                    Loading...
+                </div>
             }
         </div>
     );

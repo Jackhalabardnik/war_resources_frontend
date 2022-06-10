@@ -1,10 +1,10 @@
 import {
-    LineElement,
-    PointElement,
     CategoryScale,
     Chart as ChartJS,
     Legend,
     LinearScale,
+    LineElement,
+    PointElement,
     Title,
     Tooltip
 } from "chart.js";
@@ -36,11 +36,7 @@ const BasicChart = (props) => {
         const saturation = 0.8;
         const value = 0.95;
         const rgb = hsv2rgb(hue * 360, saturation, value);
-        const rgb_string = `rgb(${rgb[0] * 255}, ${rgb[1] * 255}, ${rgb[2] * 255})`
-
-        console.log(hue, rgb, rgb_string)
-
-        return rgb_string
+        return `rgb(${rgb[0] * 255}, ${rgb[1] * 255}, ${rgb[2] * 255})`
 
     }
 
@@ -48,36 +44,40 @@ const BasicChart = (props) => {
         responsive: true,
         plugins: {
             legend: {
+                display: props.list.labels.length > 0,
                 position: 'top',
             },
             title: {
                 display: true,
-                text: `War resources prices`,
+                text: `${props.list.data.war ? props.list.data.war : 'No data'}`,
             },
         },
         maintainAspectRatio: true,
     }
 
-    let chartData = props.list.labels.length > 0 ?
+    const label_color = get_color()
 
+    let chartData = props.list.labels.length > 0 ?
         {
             labels: props.list.labels,
-            datasets: props.list.data.map((data) => {
-                const label_color = get_color()
-                return {
-                    label: `${data.war} -> ${data.type}`,
-                    data: data.price,
-                    pointRadius: 0,
-                    borderColor: label_color,
-                    backgroundColor: label_color,
-                    tension: 0.1,
-                    spanGaps: true,
-                }
-            })
-        } : null;
+            datasets: [{
+                label: `${props.list.data.type ? props.list.data.type : 'Your legend'}`,
+                data: props.list.data.price,
+                pointRadius: 0,
+                borderColor: label_color,
+                backgroundColor: label_color,
+                tension: 0.1,
+                spanGaps: true,
+            }]
+        } :
+        {
+            labels: [],
+            datasets: [{
+            }]
+        };
 
     return (
-        <div>
+        <div className="w-100">
             {
                 chartData && !props.chartError &&
                 <Line options={chartOptions} data={chartData} type={"bar"} className="bg-white rounded-2"/>
@@ -87,14 +87,6 @@ const BasicChart = (props) => {
                 <div className="text-center">
                     <h1>{props.chartError}</h1>
                 </div>
-            }
-            {
-                props.chartWarning && !props.chartError &&
-                <ul className="alert-danger mt-2 rounded-2">
-                    {props.chartWarning.map((warning) => {
-                        return <li key={warning}>{warning}</li>
-                    })}
-                </ul>
             }
         </div>
     )

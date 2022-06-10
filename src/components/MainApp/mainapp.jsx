@@ -10,14 +10,22 @@ const MainApp = () => {
 
     const [resourcesList, setResourcesList] = useState([]);
     const [warList, setWarList] = useState([]);
-    const [pickedResourcesList, setPickedResourcesList] = useState([]);
-    const [pickedWarList, setPickedWarList] = useState([]);
-    const [chartError, setChartError] = useState('');
-    const [chartWarning, setChartWarning] = useState([]);
-    const [resourcesChartData, setResourcesChartData] = useState({
+    const [pickedResource, setPickedResource] = useState(null);
+
+
+    const [pickedFirstWar, setPickedFirstWar] = useState(null);
+    const [firstChartData, setFirstChartData] = useState({
         labels: [],
         data: {}
     });
+    const [firstChartError, setFirstChartError] = useState('');
+
+    const [pickedSecondWar, setPickedSecondWar] = useState(null);
+    const [secondChartData, setSecondChartData] = useState({
+        labels: [],
+        data: {}
+    });
+    const [secondChartError, setSecondChartError] = useState('');
 
     useEffect(() => {
         const token = localStorage.getItem("token")
@@ -67,98 +75,93 @@ const MainApp = () => {
         return price_array;
     }
 
-    const parse_resource_requests = (resource_requests) => {
-        const request_data = resource_requests.map(request => request.data)
-        const array_of_prices = []
+    const parse_resource_request = (resource, pickedWar, setError) => {
+        let data = {}
         let labels = []
-        const is_data_available = request_data.find(resource => resource.prices.length > 0)
-        let warning_data = []
+        const is_data_available = resource.prices.length > 0
 
         if (is_data_available) {
-            pickedWarList.forEach(war => {
-                request_data.forEach(resource => {
-                    if (resource.prices.length > 0) {
-                        let price_array = get_resource_prices(war, resource);
-                        if (price_array) {
-                            array_of_prices.push({
-                                price: price_array,
-                                type: resource.name,
-                                war: war.name,
-                            })
-                        } else {
-                            warning_data.push(`${resource.name} has no prices for ${war.name}`)
-                        }
-                    } else {
-                        warning_data.push(`${resource.name} has no prices for ${war.name}`)
-                    }
-                })
-            })
-            const longest_war_in_days = Math.max(...array_of_prices.map(price => price.price.length))
-            labels = Array.from(Array(longest_war_in_days).keys()).map(day => `Day ${day + 1}`)
-            setChartError('')
-            setChartWarning(warning_data)
+            let price_array = get_resource_prices(pickedWar, resource);
+            data = {
+                price: price_array,
+                type: resource.name,
+                war: pickedWar.name,
+            }
+            labels = Array.from(Array(data.price.length).keys()).map(day => `Day ${day + 1}`)
+            setError('')
         } else {
-            setChartError('There is no data for the selected resources and wars')
+            setError('There is no data for the selected resources and wars')
         }
 
         return {
             labels: labels,
-            data: array_of_prices
+            data: data
+        }
+    }
+
+    const load_chart_data = (setChartData, pickedWar, setError) => {
+        const token = localStorage.getItem("token")
+
+        if (token) {
+            const start_date = parse_date(pickedWar.startDate)
+            const end_date = parse_date(pickedWar.endDate)
+
+            axios.get(`http://localhost:8080/api/resources/id/${pickedResource.id}?start_date=${start_date}&end_date=${end_date}`, {headers: {"authorization": `${token}`}})
+                .then((response) => {
+                    setChartData(parse_resource_request(response.data, pickedWar, setError))
+                }).catch((error) => {
+                console.log(error)
+            })
         }
     }
 
     useEffect(() => {
-        if (pickedResourcesList.length > 0 && pickedWarList.length > 0) {
-            const token = localStorage.getItem("token")
-            if (token) {
-
-                const start_date = parse_date(pickedWarList.sort((a, b) => new Date(a.startDate) - new Date(b.endDate))[0].startDate)
-                const end_date = parse_date(pickedWarList.sort((a, b) => new Date(b.endDate) - new Date(a.endDate))[0].endDate)
-
-                let resource_requests = [];
-
-                for (let i = 0; i < pickedResourcesList.length; i++) {
-                    resource_requests.push(axios.get(`http://localhost:8080/api/resources/id/${pickedResourcesList[i].id}?start_date=${start_date}&end_date=${end_date}`, {headers: {"authorization": `${token}`}}))
-                }
-
-                axios.all(resource_requests).then(axios.spread((...responses) => {
-                    setResourcesChartData(parse_resource_requests(responses))
-                })).catch((error) => {
-                    console.log(error)
-                })
-
-            }
+        if (pickedResource && pickedFirstWar) {
+            load_chart_data(setFirstChartData, pickedFirstWar, setFirstChartError)
         } else {
-            setResourcesChartData({
+            setFirstChartData({
                 labels: [],
                 data: {}
             })
         }
         // eslint-disable-next-line
-    }, [pickedResourcesList, pickedWarList]);
+    }, [pickedResource, pickedFirstWar]);
+
+    useEffect(() => {
+        if (pickedResource && pickedSecondWar) {
+            load_chart_data(setSecondChartData, pickedSecondWar, setSecondChartError)
+        } else {
+            setSecondChartData({
+                labels: [],
+                data: {}
+            })
+        }
+        // eslint-disable-next-line
+    }, [pickedResource, pickedSecondWar]);
 
     return (
-        <div className="vh-100 overflow-hidden bg-dark bg-opacity-75">
-            <div className="vh-100 overflow-hidden d-flex flex-md-row flex-column bg-dark bg-opacity-10">
-                <div className="col-2 h-75">
+        <div className="vh-100 overflow-scroll ">
+            <div className=" d-flex flex-md-row flex-column h-100">
+                <div className="col-xl-3 col-md-4 col-12 m-1">
                     <ResourcePicker
                         list={resourcesList}
-                        pickedList={pickedResourcesList}
-                        setPickedList={setPickedResourcesList}
+                        pickedList={pickedResource}
+                        setPickedList={setPickedResource}
                     />
-                </div>
-                <div className="col-3 h-75 mb-3 overflow-scroll">
                     <WarPicker
                         list={warList}
-                        pickedList={pickedWarList}
-                        setPickedList={setPickedWarList}
+                        setPickFirst={setPickedFirstWar}
+                        setPickSecond={setPickedSecondWar}
                     />
                 </div>
-                <div className="m-3 h-75 w-100 me-5">
+                <div className="col-xl-9 col-md-8 col-12 m-1 d-flex">
                     <BasicChart
-                        list={resourcesChartData}
-                        chartError={chartError}
-                        chartWarning={chartWarning}
+                        list={firstChartData}
+                        chartError={firstChartError}
+                    />
+                    <BasicChart
+                        list={secondChartData}
+                        chartError={secondChartError}
                     />
                 </div>
             </div>
