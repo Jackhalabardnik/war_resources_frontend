@@ -20,32 +20,24 @@ ChartJS.register(
     PointElement
 );
 
-const hsv2rgb = (h, s, v) => {
-    let f = (n, k = (n + h / 60) % 6) => v - v * s * Math.max(Math.min(k, 4 - k, 1), 0);
-    return [f(5), f(3), f(1)];
-}
-
-const golden_ratio = 0.618033988749895;
-
 const BasicChart = (props) => {
 
-    const get_color = () => {
-
-        let hue = (Math.random() + golden_ratio);
-        hue = hue > 1 ? hue - 1 : hue;
-        const saturation = 0.8;
-        const value = 0.95;
-        const rgb = hsv2rgb(hue * 360, saturation, value);
-        return `rgb(${rgb[0] * 255}, ${rgb[1] * 255}, ${rgb[2] * 255})`
-
+    const get_color = (resource) => {
+        switch (resource) {
+            case 'gold':
+                return '#ffc700';
+            case 'silver':
+                return '#888888';
+            default:
+                return '#000000';
+        }
     }
 
     const chartOptions = {
         responsive: true,
         plugins: {
             legend: {
-                display: props.list.labels.length > 0,
-                position: 'top',
+                display: false,
             },
             title: {
                 display: true,
@@ -55,17 +47,15 @@ const BasicChart = (props) => {
         maintainAspectRatio: true,
     }
 
-    const label_color = get_color()
-
     let chartData = props.list.labels.length > 0 ?
         {
             labels: props.list.labels,
             datasets: [{
-                label: `${props.list.data.type ? props.list.data.type : 'Your legend'}`,
+                label: `${props.list.data.type}`,
                 data: props.list.data.price,
+                backgroundColor: get_color(props.list.data.type),
+                borderColor: get_color(props.list.data.type),
                 pointRadius: 0,
-                borderColor: label_color,
-                backgroundColor: label_color,
                 tension: 0.1,
                 spanGaps: true,
             }]
@@ -79,13 +69,13 @@ const BasicChart = (props) => {
     return (
         <div className="w-100">
             {
-                chartData && !props.chartError &&
+                chartData &&
                 <Line options={chartOptions} data={chartData} type={"bar"} className="bg-white rounded-2"/>
             }
             {
                 props.chartError &&
-                <div className="text-center">
-                    <h1>{props.chartError}</h1>
+                <div className="text-center alert-danger mt-1 rounded-2">
+                    {props.chartError}
                 </div>
             }
         </div>

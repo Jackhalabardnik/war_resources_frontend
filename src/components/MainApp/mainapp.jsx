@@ -90,7 +90,7 @@ const MainApp = () => {
             labels = Array.from(Array(data.price.length).keys()).map(day => `Day ${day + 1}`)
             setError('')
         } else {
-            setError('There is no data for the selected resources and wars')
+            setError('There is no data for the selected resource and war')
         }
 
         return {
