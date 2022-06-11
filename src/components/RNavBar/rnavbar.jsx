@@ -32,7 +32,7 @@ const RNavBar = (props) => {
             <nav
                 className="bg-light bg-opacity-10 d-flex justify-content-between flex-column flex-md-row align-items-center">
                 <Link to={props.mainlink ? props.mainlink : "/"}
-                      className="ms-md-2 my-3 text-white text-center text-decoration-none fs-3 fw-bold">
+                      className="ms-md-3 my-3 text-white text-center text-decoration-none fs-3 fw-bold">
                     War resources
                 </Link>
 
