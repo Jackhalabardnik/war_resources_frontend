@@ -19,14 +19,14 @@ const Login = () => {
         },
         validationSchema: loginValidationSchema,
         onSubmit: values => {
-            axios.post("http://localhost:8080/login", values)
+            axios.post("http://localhost:8080/api/login", values)
                 .then(response => {
                     localStorage.setItem("token", response.data.Authorization);
                     window.location = "/";
                 })
                 .catch(error => {
                     if (error.response && error.response.status >= 400 && error.response.status <= 500) {
-                        setError(error.response.data)
+                        setError(error.response.data.Error)
                     }
                 })
         },

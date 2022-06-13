@@ -37,15 +37,15 @@ const UserEdit = () => {
         validationSchema: updateUserValidationSchema,
         onSubmit: async values => {
             const token = localStorage.getItem("token")
+
             await axios.put("http://localhost:8080/api/user", values, {headers: {"authorization": `${token}`}})
-                .then(response => {
-                    localStorage.setItem("token", response.data);
+                .then(() => {
                     window.location = "/";
                 })
                 .catch(error => {
                     console.log(error)
                     if (error.response && error.response.status >= 400 && error.response.status <= 500) {
-                        setError(error.response.data)
+                        setError(error.response.data.message)
                     }
                 })
         },
@@ -61,7 +61,7 @@ const UserEdit = () => {
             .catch(error => {
                 console.log(error)
                 if (error.response && error.response.status >= 400 && error.response.status <= 500) {
-                    setError(error.response.data)
+                    setError(error.response.data.message)
                 }
             })
     }

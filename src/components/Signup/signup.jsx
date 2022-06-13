@@ -23,14 +23,14 @@ const Signup = () => {
         },
         validationSchema: signupValidationSchema,
         onSubmit: values => {
-            axios.post("http://localhost:8080/api/user", values)
+            axios.post("http://localhost:8080/api/user/save", values)
                 .then(response => {
                     localStorage.setItem("token", response.data.Authorization);
                     window.location = "/";
                 })
                 .catch(error => {
                     if (error.response && error.response.status >= 400 && error.response.status <= 500) {
-                        setError(error.response.data)
+                        setError(error.response.data.message)
                     }
                 })
         },
@@ -98,15 +98,6 @@ const Signup = () => {
                                 value={'[PREMIUM]'}
                                 onClick={formik.handleChange}>
                                 Premium
-                            </Button>
-                            <Button
-                                name="role"
-                                variant="outline-dark"
-                                className="shadow-none"
-                                active={formik.values.role === '[CUSTOM]'}
-                                value={'[CUSTOM]'}
-                                onClick={formik.handleChange}>
-                                Custom
                             </Button>
                         </ButtonGroup>
                     </Form.Group>
