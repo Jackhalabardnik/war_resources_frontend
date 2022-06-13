@@ -10,7 +10,9 @@ const MainApp = () => {
 
     const [resourcesList, setResourcesList] = useState([]);
     const [warList, setWarList] = useState([]);
-    const [pickedResource, setPickedResource] = useState(null);
+
+    const [firstPickedResource, setFirstPickedResource] = useState(null);
+    const [secondPickedResource, setSecondPickedResource] = useState(null);
 
 
     const [pickedFirstWar, setPickedFirstWar] = useState(null);
@@ -99,14 +101,14 @@ const MainApp = () => {
         }
     }
 
-    const load_chart_data = (setChartData, pickedWar, setError) => {
+    const load_chart_data = (setChartData, pickedWar, resource, setError) => {
         const token = localStorage.getItem("token")
 
         if (token) {
             const start_date = parse_date(pickedWar.startDate)
             const end_date = parse_date(pickedWar.endDate)
 
-            axios.get(`http://localhost:8080/api/resources/id/${pickedResource.id}?start_date=${start_date}&end_date=${end_date}`, {headers: {"authorization": `${token}`}})
+            axios.get(`http://localhost:8080/api/resources/id/${resource.id}?start_date=${start_date}&end_date=${end_date}`, {headers: {"authorization": `${token}`}})
                 .then((response) => {
                     setChartData(parse_resource_request(response.data, pickedWar, setError))
                 }).catch((error) => {
@@ -116,8 +118,8 @@ const MainApp = () => {
     }
 
     useEffect(() => {
-        if (pickedResource && pickedFirstWar) {
-            load_chart_data(setFirstChartData, pickedFirstWar, setFirstChartError)
+        if (firstPickedResource && pickedFirstWar) {
+            load_chart_data(setFirstChartData, pickedFirstWar, firstPickedResource, setFirstChartError)
         } else {
             setFirstChartData({
                 labels: [],
@@ -125,11 +127,11 @@ const MainApp = () => {
             })
         }
         // eslint-disable-next-line
-    }, [pickedResource, pickedFirstWar]);
+    }, [firstPickedResource, pickedFirstWar]);
 
     useEffect(() => {
-        if (pickedResource && pickedSecondWar) {
-            load_chart_data(setSecondChartData, pickedSecondWar, setSecondChartError)
+        if (secondPickedResource && pickedSecondWar) {
+            load_chart_data(setSecondChartData, pickedSecondWar, secondPickedResource, setSecondChartError)
         } else {
             setSecondChartData({
                 labels: [],
@@ -137,15 +139,15 @@ const MainApp = () => {
             })
         }
         // eslint-disable-next-line
-    }, [pickedResource, pickedSecondWar]);
+    }, [secondPickedResource, pickedSecondWar]);
 
     return (
         <div className="d-flex flex-column">
             <div className="d-flex justify-content-evenly flex-md-row flex-column my-1">
                 <ResourcePicker
                     list={resourcesList}
-                    pickedList={pickedResource}
-                    setPickedList={setPickedResource}
+                    setFirstPickedResource={setFirstPickedResource}
+                    setSecondPickedResource={setSecondPickedResource}
                 />
                 <WarPicker
                     list={warList}
