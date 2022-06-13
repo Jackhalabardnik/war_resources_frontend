@@ -106,7 +106,7 @@ const MainApp = () => {
 
         if (token) {
             const start_date = parse_date(pickedWar.startDate)
-            const end_date = parse_date(pickedWar.endDate)
+            const end_date = pickedWar.endDate ? parse_date(pickedWar.endDate) : parse_date(new Date())
 
             axios.get(`http://localhost:8080/api/resources/id/${resource.id}?start_date=${start_date}&end_date=${end_date}`, {headers: {"authorization": `${token}`}})
                 .then((response) => {
