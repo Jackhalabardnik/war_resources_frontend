@@ -29,6 +29,8 @@ const BasicChart = (props) => {
                 return '#ffc700';
             case 'silver':
                 return '#888888';
+            case 'natural gas':
+                return '#109b33';
             default:
                 return '#000000';
         }
@@ -51,7 +53,7 @@ const BasicChart = (props) => {
                     callback: function(value, index, ticks) {
                         return value.toFixed(2) + " $";
                     }
-                }
+                },
             },
             x: {
                 ticks: {
