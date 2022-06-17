@@ -54,26 +54,28 @@ const MainApp = () => {
 
     const get_resource_prices = (war, resource) => {
         const war_start_date = new Date(war.startDate)
-        const war_length = (new Date(war.endDate) - new Date(war.startDate)) / (1000 * 60 * 60 * 24)
+        const war_length = (new Date(war.endDate ? war.endDate : new Date()) - new Date(war.startDate)) / (1000 * 60 * 60 * 24)
 
         let first_price_index = resource.prices.findIndex(price => {
             return parse_date(price.date) === parse_date(war_start_date)
         })
 
         if (first_price_index === -1) {
+            console.log('no price for first war')
             return null;
         }
 
         let price_array = []
         let labels_array = []
 
-        if (first_price_index === -1) {
-            console.log(resource.prices)
-        }
-
         for (let i = first_price_index; i < first_price_index + war_length; i++) {
-            price_array.push(resource.prices[i].price)
-            labels_array.push(`Day ${i+1}->` + parse_date(resource.prices[i].date))
+            if(resource.prices[i]) {
+                price_array.push(resource.prices[i].price)
+                labels_array.push(`Day ${i+1}->` + parse_date(resource.prices[i].date))
+            }
+            else {
+                console.log(`no price for day ${i+1}`)
+            }
         }
 
         return [price_array, labels_array];

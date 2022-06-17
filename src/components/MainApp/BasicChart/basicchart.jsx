@@ -49,7 +49,7 @@ const BasicChart = (props) => {
             y: {
                 ticks: {
                     callback: function(value, index, ticks) {
-                        return value + " $";
+                        return value.toFixed(2) + " $";
                     }
                 }
             },

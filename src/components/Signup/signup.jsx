@@ -23,7 +23,6 @@ const Signup = () => {
         },
         validationSchema: signupValidationSchema,
         onSubmit: values => {
-            console.log(values)
             axios.post("http://localhost:8080/api/user/save", values)
                 .then(response => {
                     localStorage.setItem("token", response.data.Authorization);
