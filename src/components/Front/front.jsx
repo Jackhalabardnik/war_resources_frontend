@@ -19,10 +19,10 @@ const Front = () => {
                         Please, choose your plan and sign up.
                         <ul className="text-start">
                             <li>
-                                Basic - free, only one resource per day
+                                Basic - free, only one resource
                             </li>
                             <li>
-                                Premium - free, unlimited resources per day
+                                Premium - free, all resources
                             </li>
                         </ul>
                     </div>
