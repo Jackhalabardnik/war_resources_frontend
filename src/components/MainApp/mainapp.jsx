@@ -65,6 +65,7 @@ const MainApp = () => {
         }
 
         let price_array = []
+        let labels_array = []
 
         if (first_price_index === -1) {
             console.log(resource.prices)
@@ -72,9 +73,10 @@ const MainApp = () => {
 
         for (let i = first_price_index; i < first_price_index + war_length; i++) {
             price_array.push(resource.prices[i].price)
+            labels_array.push(`Day ${i+1}->` + parse_date(resource.prices[i].date))
         }
 
-        return price_array;
+        return [price_array, labels_array];
     }
 
     const parse_resource_request = (resource, pickedWar, setError) => {
@@ -83,13 +85,13 @@ const MainApp = () => {
         const is_data_available = resource.prices.length > 0
 
         if (is_data_available) {
-            let price_array = get_resource_prices(pickedWar, resource);
+            let [price_array, labels_array] = get_resource_prices(pickedWar, resource);
             data = {
                 price: price_array,
                 type: resource.name,
                 war: pickedWar.name,
             }
-            labels = Array.from(Array(data.price.length).keys()).map(day => `Day ${day + 1}`)
+            labels = labels_array
             setError('')
         } else {
             setError('There is no data for the selected resource and war')

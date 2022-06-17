@@ -1,6 +1,7 @@
 import {
     CategoryScale,
     Chart as ChartJS,
+    Ticks,
     Legend,
     LinearScale,
     LineElement,
@@ -43,6 +44,22 @@ const BasicChart = (props) => {
                 display: true,
                 text: `${props.list.data.war ? props.list.data.war : 'No data'}`,
             },
+        },
+        scales: {
+            y: {
+                ticks: {
+                    callback: function(value, index, ticks) {
+                        return value + " $";
+                    }
+                }
+            },
+            x: {
+                ticks: {
+                    callback: function(value) {
+                        return this.getLabelForValue(value).split('-')[0];
+                    }
+                }
+            }
         },
         maintainAspectRatio: true,
     }
