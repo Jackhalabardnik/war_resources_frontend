@@ -19,10 +19,11 @@ const Signup = () => {
             username: '',
             email: '',
             password: '',
-            role: '[BASIC]',
+            roleName: 'BASIC',
         },
         validationSchema: signupValidationSchema,
         onSubmit: values => {
+            console.log(values)
             axios.post("http://localhost:8080/api/user/save", values)
                 .then(response => {
                     localStorage.setItem("token", response.data.Authorization);
@@ -82,20 +83,20 @@ const Signup = () => {
                     <Form.Group className="mb-3">
                         <ButtonGroup className="mb-3 d-flex" id="inputAccountType">
                             <Button
-                                name="role"
+                                name="roleName"
                                 variant="outline-dark"
                                 className="shadow-none"
-                                active={formik.values.role === '[BASIC]'}
-                                value={'[BASIC]'}
+                                active={formik.values.roleName === 'BASIC'}
+                                value={'BASIC'}
                                 onClick={formik.handleChange}>
                                 Basic
                             </Button>
                             <Button
-                                name="role"
+                                name="roleName"
                                 variant="outline-dark"
                                 className="shadow-none"
-                                active={formik.values.role === '[PREMIUM]'}
-                                value={'[PREMIUM]'}
+                                active={formik.values.roleName === 'PREMIUM'}
+                                value={'PREMIUM'}
                                 onClick={formik.handleChange}>
                                 Premium
                             </Button>
