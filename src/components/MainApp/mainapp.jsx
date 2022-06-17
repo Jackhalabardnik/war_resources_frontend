@@ -62,7 +62,7 @@ const MainApp = () => {
 
         if (first_price_index === -1) {
             console.log('no price for first war')
-            return null;
+            return [null, null];
         }
 
         let price_array = []
@@ -88,13 +88,17 @@ const MainApp = () => {
 
         if (is_data_available) {
             let [price_array, labels_array] = get_resource_prices(pickedWar, resource);
-            data = {
-                price: price_array,
-                type: resource.name,
-                war: pickedWar.name,
+            if(price_array) {
+                data = {
+                    price: price_array,
+                    type: resource.name,
+                    war: pickedWar.name,
+                }
+                labels = labels_array
+                setError('')
+            } else {
+                setError('There is no data for the selected resource and war')
             }
-            labels = labels_array
-            setError('')
         } else {
             setError('There is no data for the selected resource and war')
         }
