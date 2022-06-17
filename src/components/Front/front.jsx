@@ -24,9 +24,6 @@ const Front = () => {
                             <li>
                                 Premium - free, unlimited resources per day
                             </li>
-                            <li>
-                                Custom - get optimised queries and special endpoints
-                            </li>
                         </ul>
                     </div>
                     <div className="my-4 text-dark">
