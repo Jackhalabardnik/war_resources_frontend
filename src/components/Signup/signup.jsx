@@ -3,6 +3,9 @@ import axios from "axios"
 import {Alert, Button, ButtonGroup, FloatingLabel, Form} from "react-bootstrap"
 import {useFormik} from 'formik';
 import * as yup from "yup";
+import YupPassword from "yup-password";
+
+YupPassword(yup);
 
 const signupValidationSchema = yup.object().shape({
     username: yup.string().required().label('Username'),

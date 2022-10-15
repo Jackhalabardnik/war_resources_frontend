@@ -30,7 +30,8 @@
     "web-vitals": "^2.1.4",
     "webpack": "^5.72.1",
     "webpack-manifest-plugin": "^5.0.0",
-    "yup": "^0.32.11"
+    "yup": "^0.32.11",
+    "yup-password": "^0.2.2"
   },
   "scripts": {
     "start": "react-scripts start",
