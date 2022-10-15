@@ -7,7 +7,7 @@ import * as yup from "yup";
 const signupValidationSchema = yup.object().shape({
     username: yup.string().required().label('Username'),
     email: yup.string().email().required().label('Email'),
-    password: yup.string().required().label('Password'),
+    password: yup.string().required().password().label('Password'),
     role: yup.string().label('Role')
 });
 
